@@ -1,0 +1,35 @@
+version: '2'
+services:
+  postgresdb:
+    image: postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: "postgres_user"
+      POSTGRES_PASSWORD: "postgres_pass"
+      POSTGRES_DB: "djangodb"
+    volumes:
+      - data:/var/lib/db
+
+  nginxserver:
+    image: nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - "./server.conf:/etc/nginx/sites-enabled/server.conf"
+
+  app:
+    build:
+      context: ./docker
+    volumes:
+      - "/Users/subhan/Katra:/usr/src/app"
+    ports:
+      - "8000:8000"
+    links:
+      - postgresdb
+
+volumes:
+  data:
+    external:
+      name: postgresvol 
